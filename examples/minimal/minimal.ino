@@ -1,6 +1,8 @@
 #include <Arduino.h>
 // This is a test example for MathBase
 
+#include <stevesch-MathBase.h>
+
 void setup()
 {
   Serial.begin(115200);
