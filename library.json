@@ -1,0 +1,24 @@
+{
+  "name": "stevesch-MathBase",
+  "keywords": "",
+  "description": "",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/stevesch/stevesch-MathBase"
+  },
+  "exclude": "tests",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "authors":
+  {
+    "name": "Stephen Schlueter",
+    "url": "",
+    "maintainer": true
+  },
+  "dependencies": [
+    // {
+    //     "name": "SPIFFS"
+    // },
+  ]
+}
