@@ -95,7 +95,7 @@ namespace stevesch
 		inline float getFloat()		{ return _rf(); }
 		inline float getFloatAB( float a, float b )
 		{
-//			return Lerpf( a, b, _rf() );
+//		return lerpf( a, b, _rf() );
 			return a + _rf()*(b - a);
 		}
 	};

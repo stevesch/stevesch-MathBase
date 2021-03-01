@@ -17,8 +17,5 @@
     "maintainer": true
   },
   "dependencies": [
-    // {
-    //     "name": "SPIFFS"
-    // },
   ]
 }
