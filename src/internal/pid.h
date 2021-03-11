@@ -228,6 +228,11 @@ namespace stevesch
 		return p->x;
 	}
 
+  inline float APIDGetOffset (const APID* p)
+  {
+    return p->x - p->eq;
+  }
+
 	// Purpose: Set the current velocity of the APID
 	// (normally only for initialization or reset)
 	inline void APIDSetVelocity (APID* p, float v)
@@ -346,6 +351,9 @@ namespace stevesch
 
 		// Purpose: Get the current position of the APID
 		inline float getPosition() const	{ return APIDGetPosition (this); }
+
+    // Purpose: Get current offset (current position - equilibrium)
+    inline float getOffset() const { return APIDGetOffset (this); }
 
 		//	a - Offset coefficient		(x - x0)
 		//	b - Velocity coefficient	(dx/dt)
