@@ -17,20 +17,20 @@
 
 namespace stevesch
 {
-	const float c_fpi			= 3.1415926535897932384626433832795029f;	// pi
-	const float	c_f2pi			= 6.28318530717958647692f;					// 2*pi
-	const float c_f3pi			= 9.42477796077f;							// 3*pi
-	const float c_fpi_2			= 1.57079632679489661923f;					// pi/2
-	const float c_fpi_3			= 1.0471975512f;							// pi/3
-	const float c_fpi_4			= 0.78539816339744830962f;					// pi/4
-	const float c_fSqrt2		= 1.414213562373f;							// sqrt(2)
-	const float c_fRecipSqrt2	= 0.7071067811865475244008443621048490f;	// 1/sqrt(2)
-	const float	c_fSqrt3		= 1.732050807569f;							// sqrt(3)
-	const float c_fRecipSqrt3	= 0.5773502691896f;							// 1/sqrt(3)
-	const float c_fSqrt3_2		= 0.8660254037844f;							// sqrt(3) / 2
+	constexpr float c_fpi			= 3.1415926535897932384626433832795029f;	// pi
+	constexpr float	c_f2pi			= 6.28318530717958647692f;					// 2*pi
+	constexpr float c_f3pi			= 9.42477796077f;							// 3*pi
+	constexpr float c_fpi_2			= 1.57079632679489661923f;					// pi/2
+	constexpr float c_fpi_3			= 1.0471975512f;							// pi/3
+	constexpr float c_fpi_4			= 0.78539816339744830962f;					// pi/4
+	constexpr float c_fSqrt2		= 1.414213562373f;							// sqrt(2)
+	constexpr float c_fRecipSqrt2	= 0.7071067811865475244008443621048490f;	// 1/sqrt(2)
+	constexpr float	c_fSqrt3		= 1.732050807569f;							// sqrt(3)
+	constexpr float c_fRecipSqrt3	= 0.5773502691896f;							// 1/sqrt(3)
+	constexpr float c_fSqrt3_2		= 0.8660254037844f;							// sqrt(3) / 2
 
-	const float floatInfinity	= 1e+20f;
-	//const float SFloatInfinity	= std::numeric_limits<float>::infinity();
+	constexpr float floatInfinity	= 1e+20f;
+	//constexpr float SFloatInfinity	= std::numeric_limits<float>::infinity();
 
   inline float maxf(float a, float b) { return std::max(a, b); }
   inline float minf(float a, float b) { return std::min(a, b); }
