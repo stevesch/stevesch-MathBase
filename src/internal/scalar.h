@@ -102,6 +102,16 @@ namespace stevesch
 		f2 = fTemp;
 	}
 
+  // wrap value to [0.0, 1.0)
+  inline float wrapUnit(float value) {
+    float wh;
+    float y = modff(value, &wh);
+    if (y < 0.0f) {
+      y += 1.0f;
+    }
+    return y;
+  }
+
 	// Mod to -pi<=x<=pi where x is no more than +/- 2*pi from the range
 	inline float closeMod2pi(float x)
 	{

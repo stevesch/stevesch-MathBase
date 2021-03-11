@@ -48,8 +48,28 @@ namespace stevesch
 
 	//////////////////////////////////////////////////////////////////////
 
+  // TODO: C++17 std::clamp
+  template <typename T> inline T clampT(const T& x, const T& a, const T& b) {
+    if (x < a) {
+      return a;
+    }
+    if (x > b) {
+      return b;
+    }
+    return x;
+  }
+
   inline int ftoi(float f)  { return (int)f; }
   inline unsigned int ftou(float f) { return (unsigned int)f; }
+
+  // wrap value to [0, wrap)
+  inline int wrapInt(int value, int wrap) {
+    int newValue = value % wrap;
+    if (newValue < 0) {
+      newValue += wrap;
+    }
+    return newValue;
+  }
 
 	//////////////////////////////////////////////////////////////////////
 	// random integer numbers
