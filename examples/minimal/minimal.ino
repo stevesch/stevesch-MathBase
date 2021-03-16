@@ -3,6 +3,8 @@
 
 #include <stevesch-MathBase.h>
 
+// TODO: Meaningful minimal example
+
 void setup()
 {
   Serial.begin(115200);
