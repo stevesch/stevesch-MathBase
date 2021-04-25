@@ -3,8 +3,15 @@
 
 #include "mathBase.h"
 
+namespace
+{
+  template <typename T, unsigned int N> char (&_arraySizeOfType(T(&)[N]))[N];
+}
+
 namespace stevesch
 {
+  template <typename T> inline size_t sizeOfArray(const T& a) { return sizeof(_arraySizeOfType(a)); }
+
 	inline int countBits(uint32_t u)
 	{
 		int iBits;
