@@ -6,6 +6,7 @@
 using stevesch::RandGen;
 using stevesch::Histogram;
 
+void testNumerics();
 void testRandomNumbers();
 
 void setup()
@@ -14,6 +15,7 @@ void setup()
   while (!Serial);
   Serial.println("Setup initializing...");
 
+  testNumerics();
   testRandomNumbers();
 
   Serial.println("Setup complete.");
@@ -27,6 +29,24 @@ void loop()
   if (now >= nextLog) {
     nextLog += kLogInterval;
     Serial.println("Reset to re-run tests/demo");
+  }
+}
+
+
+void testNumerics()
+{
+  float a = -5.0f;
+  float b = 5.0f;
+  float step = (b - a) / 20.0f;
+  Serial.printf("    x  ftoi round cl(-2.5,1.3)  mod2pi\n");
+  for (float x=a; x<=b; x += step)
+  {
+    Serial.printf("%5.2f   %3d   %3d        %5.2f   %5.2f\n",
+      x,
+      stevesch::ftoi(x),
+      stevesch::roundftoi(x),
+      stevesch::clampf(x, -2.5f, 1.3f),
+      stevesch::closeMod2pi(x));
   }
 }
 
