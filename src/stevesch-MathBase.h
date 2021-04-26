@@ -7,5 +7,6 @@
 #include "internal/pid.h"
 #include "internal/spline.h"
 #include "internal/statistics.h"
+#include "internal/histogram.h"
 
 #endif

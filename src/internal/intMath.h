@@ -1,30 +1,32 @@
-#ifndef INCLUDE_STEVESCH_MATHBASE_INTERNAL_INTMATH_H_
-#define INCLUDE_STEVESCH_MATHBASE_INTERNAL_INTMATH_H_
+#ifndef STEVESCH_MATHBASE_INTERNAL_INTMATH_H_
+#define STEVESCH_MATHBASE_INTERNAL_INTMATH_H_
 
 #include "mathBase.h"
+#include <random>
 
 namespace
 {
-  template <typename T, unsigned int N> char (&_arraySizeOfType(T(&)[N]))[N];
+  template <typename T, unsigned int N>
+  char (&_arraySizeOfType(T (&)[N]))[N];
 }
 
 namespace stevesch
 {
-  template <typename T> inline size_t sizeOfArray(const T& a) { return sizeof(_arraySizeOfType(a)); }
+  template <typename T>
+  inline size_t sizeOfArray(const T &a) { return sizeof(_arraySizeOfType(a)); }
 
-	inline int countBits(uint32_t u)
-	{
-		int iBits;
-		for (iBits=0; u; u &= u-1 )
-		{
-			iBits++;
-		}
-		return iBits;
-	}
+  inline int countBits(uint32_t u)
+  {
+    int iBits;
+    for (iBits = 0; u; u &= u - 1)
+    {
+      iBits++;
+    }
+    return iBits;
+  }
 
-	
-	// Bit counter by Ratko Tomic
-/*
+  // Bit counter by Ratko Tomic
+  /*
 	inline int countBits(uint32_t u)
 		
 	{
@@ -37,119 +39,119 @@ namespace stevesch
 	}
 */
 
-	inline uint32_t highestBit(uint32_t u)
-	{
-		uint32_t uHighestBit = 0x80000000U;	// (((uint32_t)-1) & ~(((uint32_t)-1) >> 1));
-		
-		do
-		{
-			if (uHighestBit & u)
-			{
-				break;
-			}
-			uHighestBit >>= 1;
-		} while (0 != uHighestBit);
+  inline uint32_t highestBit(uint32_t u)
+  {
+    uint32_t uHighestBit = 0x80000000U; // (((uint32_t)-1) & ~(((uint32_t)-1) >> 1));
 
-		return uHighestBit;
-	}
+    do
+    {
+      if (uHighestBit & u)
+      {
+        break;
+      }
+      uHighestBit >>= 1;
+    } while (0 != uHighestBit);
 
-	//////////////////////////////////////////////////////////////////////
+    return uHighestBit;
+  }
+
+  //////////////////////////////////////////////////////////////////////
 
   // TODO: C++17 std::clamp
-  template <typename T> inline T clampT(const T& x, const T& a, const T& b) {
-    if (x < a) {
+  template <typename T>
+  inline T clampT(const T &x, const T &a, const T &b)
+  {
+    if (x < a)
+    {
       return a;
     }
-    if (x > b) {
+    if (x > b)
+    {
       return b;
     }
     return x;
   }
 
-  inline int ftoi(float f)  { return (int)f; }
+  inline int ftoi(float f) { return (int)f; }
   inline unsigned int ftou(float f) { return (unsigned int)f; }
 
   // wrap value to [0, wrap)
-  inline int wrapInt(int value, int wrap) {
+  inline int wrapInt(int value, int wrap)
+  {
     int newValue = value % wrap;
-    if (newValue < 0) {
+    if (newValue < 0)
+    {
       newValue += wrap;
     }
     return newValue;
   }
 
-	//////////////////////////////////////////////////////////////////////
-	// random integer numbers
+  //////////////////////////////////////////////////////////////////////
+  // random integer numbers
 
-	// pseudo-random number generator class
-	class RandGen
-	{
-	private:
-		unsigned long mSeed;
+  // pseudo-random number generator class
+  class RandGen
+  {
+  private:
+    std::default_random_engine mGenerator;
 
+  public:
+    RandGen();
+    RandGen(uint32_t nSeed) : mGenerator(nSeed) {}
+    RandGen(uint16_t s1, uint16_t s2) // 2D seed (16 bits each guaranteed)
+    {
+      set2DSeed(s1, s2);
+    }
 
-		uint32_t _ru();	// return random 32-bit unsigned int
+    void setSeed(uint32_t nSeed);
+    void set2DSeed(uint16_t s1, uint16_t s2); // 2D seed (16 bits each guaranteed)
 
-		inline int _ri( int nRange )
-		{
-			double a = ((double)nRange) / 4294967296.0;	// == n / (double)0xffffffff
-			return (int)( double(_ru()) * a);
-		}
+    inline uint32_t getU()
+    {
+      std::uniform_int_distribution<uint32_t> distribution(0, 4294967295);
+      uint32_t value = distribution(mGenerator);
+      return value;
+    }
 
-		inline float _rf()
-		{
-			return ( (float)_ru() / ((float)0xffffffffU) );
-		}
+    // return a random integer between 0..n-1. the distribution will get worse as n approaches 2^32.
+    inline int getInt(int nRange)
+    {
+      std::uniform_int_distribution<uint32_t> distribution(0, nRange - 1);
+      uint32_t value = distribution(mGenerator);
+      return value;
+    }
 
-	public:
-		RandGen();
-		RandGen( unsigned long nSeed ) : mSeed(nSeed)	{}
-		RandGen( int s1, int s2 )	// 2D seed (16 bits each guaranteed)
-		{
-			set2DSeed( s1, s2 );
-		}
-		unsigned long getSeed() const;
-		void setSeed( unsigned long nSeed );
+    inline float getFloat()
+    {
+      std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+      float value = distribution(mGenerator);
+      return value;
+    }
 
-		void set2DSeed( int s1, int s2 );	// 2D seed (16 bits each guaranteed)
+    inline float getFloatAB(float a, float b)
+    {
+      std::uniform_real_distribution<float> distribution(a, b);
+      float value = distribution(mGenerator);
+      return value;
+    }
+  };
 
-		// return next 32 bit random number. this uses a not-very-random linear congruential method.
-		inline uint getU()			{ return _ru(); }
+  ////////////////////////////////////////////////////////////////////////
 
-		// return a random integer between 0..n-1. the distribution will get worse as n approaches 2^32.
-		inline int getInt(int nRange)	{ return _ri(nRange); }
+  extern RandGen S_RandGen;
 
-		inline float getFloat()		{ return _rf(); }
-		inline float getFloatAB( float a, float b )
-		{
-//		return lerpf( a, b, _rf() );
-			return a + _rf()*(b - a);
-		}
-	};
+  // return next 32 bit random number. this uses a not-very-random linear
+  // congruential method.
+  inline uint32_t SRandU() { return S_RandGen.getU(); }
 
-	////////////////////////////////////////////////////////////////////////
+  // set the current random number seed
+  inline void SRandSetSeed(uint32_t n) { S_RandGen.setSeed(n); }
 
-	extern RandGen	S_RandGen;
+  // return a random integer between 0..n-1.
+  inline int SRandInt(int n) { return S_RandGen.getInt(n); }
 
-	// return next 32 bit random number. this uses a not-very-random linear
-	// congruential method.
-	inline uint32_t SRandU()							{ return S_RandGen.getU(); }
-	
-	// get the current random number seed
-	inline unsigned long SRandGetSeed()			{ return S_RandGen.getSeed(); }
-	
-	// set the current random number seed
-	inline void SRandSetSeed(unsigned long n)		{ S_RandGen.setSeed(n); }
+  //////////////////////////////////////////////////////////////////////
 
-	// return a random integer between 0..n-1. the distribution will get worse
-	// as n approaches 2^32.
-	inline int SRandInt( int n )					{ return S_RandGen.getInt( n ); }
+} // namespace S
 
-	// return 1 if the random number generator is working
-	int STestRand();
-
-	//////////////////////////////////////////////////////////////////////
-
-}	// namespace S
-
-#endif	// _INCLUDE_SINTMATH_H_
+#endif

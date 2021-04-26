@@ -1,5 +1,5 @@
-#ifndef INCLUDE_STEVESCH_MATHBASE_INTERNAL_SCALAR_H_
-#define INCLUDE_STEVESCH_MATHBASE_INTERNAL_SCALAR_H_
+#ifndef STEVESCH_MATHBASE_INTERNAL_SCALAR_H_
+#define STEVESCH_MATHBASE_INTERNAL_SCALAR_H_
 // Scalar floating-point library header
 //
 // Copyright © 2002, Stephen Schlueter, All Rights Reserved. https://github.com/stevesch
