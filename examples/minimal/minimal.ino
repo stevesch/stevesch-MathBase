@@ -7,6 +7,8 @@ using stevesch::RandGen;
 using stevesch::Histogram;
 
 void testNumerics();
+void testFloatTiming();
+void testRmsError_rsqrtfApprox();
 void testRandomNumbers();
 
 void setup()
@@ -16,6 +18,8 @@ void setup()
   Serial.println("Setup initializing...");
 
   testNumerics();
+  testFloatTiming();
+  testRmsError_rsqrtfApprox();
   testRandomNumbers();
 
   Serial.println("Setup complete.");
@@ -112,4 +116,79 @@ void testRandomNumbers()
     Serial.println("");
     h.log(Serial, kGraphHeight);
   }
+}
+
+float timeFloatFn(float(*fn)(float), float a, float b, int testCount)
+{
+  long t0 = micros();
+  RandGen r((uint32_t)t0);
+
+  for (int i=0; i<testCount; ++i) {
+    float x = r.getFloatAB(a, b);
+    volatile float y = fn(x);
+    y; // circumvent compiler warning about unused var
+  }
+
+  long t1 = micros();
+  long tdif = t1 - t0;
+  float invCount = 1.0f / testCount;
+  float usecondsPerCall = tdif * invCount;
+  return usecondsPerCall;
+}
+
+void testFloatTiming()
+{
+  float a = 0.0f;
+  float b = 1.0e+6f;
+  int testCount = 100000;
+
+  float time0 = timeFloatFn([](float x) { return x; }, a, b, testCount);
+  float time1 = timeFloatFn(sqrtf, a, b, testCount);
+  float time2 = timeFloatFn([](float x) { return sqrtf(x); }, a, b, testCount);
+
+  a = 0.00001f;
+  float time3 = timeFloatFn([](float x) { return 1.0f / sqrtf(x); }, a, b, testCount);
+  float time4 = timeFloatFn([](float x) { return powf(x, -0.5f); }, a, b, testCount);
+  float time5 = timeFloatFn(stevesch::rsqrtfApprox, a, b, testCount);
+
+  a = 0.001f; b = 1.0e+6f;
+  float time6 = timeFloatFn([](float x) { return 1.0f / x; }, a, b, testCount);
+  a = -1.0e+6f; b = -0.001f;
+  float time7 = timeFloatFn([](float x) { return 1.0f / x; }, a, b, testCount);
+
+  Serial.printf("Function costs (%d tests each):\n", testCount);
+  Serial.printf("nop(x):            %5.2f us\n", time0);
+  Serial.printf("sqrtf:             %5.2f us\n", time1);
+  Serial.printf("sqrtf(x):          %5.2f us\n", time2);
+  Serial.printf("1.0f / sqrtf(x):   %5.2f us\n", time3);
+  Serial.printf("powf(x, -0.5f):    %5.2f us\n", time4);
+  Serial.printf("rsqrtfApprox:      %5.2f us\n", time5);
+  Serial.printf("1/x (x>0):         %5.2f us\n", time6);
+  Serial.printf("1/x (x<0):         %5.2f us\n", time7);
+}
+
+void testRmsError_rsqrtfApprox()
+{
+  long t0 = micros();
+
+  float a = 0.00001f;
+  float b = 1.0e+6f;
+  int testCount = 100000;
+  double sumOfSquares = 0.0f;
+  double maxErrorFactor = 0.0f;
+
+  RandGen r((uint32_t)t0);
+  for (int i=0; i<testCount; ++i) {
+    float x = r.getFloatAB(a, b);
+    double y0 = 1.0 / sqrt((double)x);
+    double y1 = (double)stevesch::rsqrtfApprox(x);
+    double e = y1 - y0;
+    double factor = e / y0;  // error as a factor of the baseline value
+    maxErrorFactor = std::max(maxErrorFactor, fabs(factor));
+    sumOfSquares += factor*factor;
+  }
+
+  double ermsPct = 100.0f * sqrt(sumOfSquares / testCount);
+  double maxPct = 100.0f * maxErrorFactor;
+  Serial.printf("rsqrtfApprox RMS error: %8.6f %%  max: %8.6f %%\n", ermsPct, maxPct);
 }
