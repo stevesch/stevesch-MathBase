@@ -2,6 +2,20 @@
 
 namespace stevesch
 {
+  float safeRemapf(float x0, float a0, float b0, float a1, float b1)
+  {
+    if (a0 != b0) {
+      return remapf(x0, a0, b0, a1, b1);
+    }
+
+    if (x0 < a0) {
+      return a1;
+    }
+    if (x0 > a0) {
+      return b1;
+    }
+    return 0.5f*(a1 + b1);
+  }
 
 	// converts cartesian <x, y> to polar <r, theta>
 	// zeros values of r where r < deadzone, otherwise

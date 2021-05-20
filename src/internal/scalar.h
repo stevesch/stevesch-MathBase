@@ -11,6 +11,7 @@
 #include <math.h>
 #include <type_traits>
 #include <limits>
+#include <functional>
 
 #include "mathBase.h"
 #include "intMath.h"
@@ -91,6 +92,22 @@ namespace stevesch
     return a + t * (b - a);
   }
 
+  // linearly map value from range [a0, b0] to new range [a1, b1]
+  // initial range, [a0, b0], must be non-zero in length (a0 != b0)
+  inline float remapf(float x0, float a0, float b0, float a1, float b1)
+  {
+    float t = (x0 - a0) / (b0 - a0);
+    float x1 = lerpf(a1, b1, t);
+    return x1;
+  }
+
+  // linearly map value from range [a0, b0] to new range [a1, b1]
+  // if the initial range is zero in length (a0 == b0), map either to
+  // - beginning of new range if x0 < value
+  // - end of the new range if x0 > value
+  // - midpoint of new range if x == value
+  float safeRemapf(float x0, float a0, float b0, float a1, float b1);
+
   // random number (0.0, 1.0)
   inline float randf()
   {
@@ -106,9 +123,29 @@ namespace stevesch
     //		return Lerpf( a, b, Randf() );
   }
 
+  // @return: value such that fMin <= fTest <= fMax
   inline float clampf(float fTest, float fMin, float fMax)
   {
-    return ((fTest < fMin) ? fMin : ((fTest > fMax) ? fMax : fTest));
+    // templated version doesn't always optimize well yet, so:
+    if (fTest < fMin) {
+      return fMin;
+    }
+    if (fTest > fMax) {
+      return fMax;
+    }
+    return fTest;
+  }
+
+  // until C++17 std::clamp is available:
+  template <typename T>
+  inline const T& clamp(const T& x, const T& a, const T& b) {
+    if (std::less<T>{}(x, a)) {
+      return a;
+    }
+    if (std::less<T>{}(b, x)) {
+      return b;
+    }
+    return x;
   }
 
   inline void swapf(float &f1, float &f2)
@@ -184,6 +221,16 @@ namespace stevesch
   // resulting <r, theta> is converted back to <x, y>
   // returns 'true' if <x, y> is within dead-zone (output x=y=0)
   bool zeroDeadZonePolar(float &x, float &y, float deadzone);
-}
 
+  // linearly interpolate between two integer values and return the nearest integer to that result
+  inline int lerpInt(int a, int b, float t)
+  {
+    float fa = (float)a;
+    float fb = (float)b;
+    float f = lerpf(fa, fb, t);
+    f = (fa < fb) ? clampf(f, fa, fb) : clampf(f, fb, fa);
+    int i = roundftoi(f);
+    return i;
+  }
+}
 #endif
