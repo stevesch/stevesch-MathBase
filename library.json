@@ -1,7 +1,7 @@
 {
   "name": "stevesch-MathBase",
-  "keywords": "",
-  "description": "",
+  "keywords": "Arduino, float, math, scalar, PID, interpolate, lerp, dead zone, clamp, wrap, linear, trig, histogram, approximation, random, spline, statistics",
+  "description": "Some common scalar math operations not provided by all C++ environments.",
   "repository":
   {
     "type": "git",
@@ -13,9 +13,18 @@
   "authors":
   {
     "name": "Stephen Schlueter",
-    "url": "",
+    "url": "https://github.com/stevesch",
     "maintainer": true
   },
+  "examples": [
+    {
+      "name": "Minimal",
+      "base": "examples/minimal",
+      "files": [
+        "minimal.ino"
+      ]
+    }
+  ],
   "dependencies": [
   ]
 }
