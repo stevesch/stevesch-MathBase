@@ -1,6 +1,6 @@
 {
   "name": "stevesch-MathBase",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": "Arduino, float, math, scalar, PID, interpolate, lerp, dead zone, clamp, wrap, linear, trig, histogram, approximation, random, spline, statistics",
   "description": "Some common (mostly scalar) math operations not provided by all C++ environments.",
   "repository":

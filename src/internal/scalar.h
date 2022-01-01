@@ -92,6 +92,12 @@ namespace stevesch
     return a + t * (b - a);
   }
 
+  // generic lerp, also overloaded in vector2, vector3 classes in stevesch-MathVec:
+  inline void lerp(float& dst, float a, float b, float t)
+  {
+    dst = lerpf(a, b, t);
+  }
+
   // linearly map value from range [a0, b0] to new range [a1, b1]
   // initial range, [a0, b0], must be non-zero in length (a0 != b0)
   inline float remapf(float x0, float a0, float b0, float a1, float b1)
